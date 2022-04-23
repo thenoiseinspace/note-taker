@@ -1,8 +1,14 @@
 //Note: I had to run npm i express twice to get this to work? Not sure why. Anyway, now all my package-lock.json and module files are duplicated, have fun with that. 
 
 //Setup - based on activity 1
+
+/////////////////
+//Configuration//
+/////////////////
 const express = require("express"); 
 const path = require ("path"); 
+
+const api = require("./routes/index.js"); 
 
 const app = express(); 
 const PORT = process.env.PORT || 3001;
@@ -14,24 +20,37 @@ const { allowedNodeEnvironmentFlags } = require("process");
 const writeFileAsync = util.promisify(fs.readFile); 
 const readFileAsync = util.promisify(fs.readFile); 
 
+//getting an error for dirname, found this solution on a github help page--hey, it worked! 
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+//////////////
+//middleware//
+//////////////
+
 //bringing in Express
 app.use(express.urlencoded({extended: true})); 
 //Jung said in the coding slack channel that JSON should be capitalized, but this one keeps reverting to lower case when I type it? Not sure why?
 app.use(express.json()); 
 //This is the middleware part--static automatically creates urls to everything inside the public folder so we don't have to do it manually
-app.use(express.static("./develop/public"))
+app.use(express.static(".Develop/public"))
+// app.use('/api', api); 
 
-//Setting up HTML routes - basing mostly on the structure from activity 3
+///////////////
+//HTML routes//
+///////////////
+
+//Setting up HTML routes - basing mostly on the structure from activities 3 and 7
 app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, ".develop/public/notes.html"));
+    res.sendFile(path.join(__dirname, "/Develop/public/notes.html"));
 });
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "./develop/public/index.html")); 
+    res.sendFile(path.join(__dirname, "/Develop/public/index.html")); 
 }); 
 
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "./develop/public/index.html")); 
+    res.sendFile(path.join(__dirname, "/Develop/public/index.html")); 
 });
 
 //Listening - and yes I *DID* add the rocket ship like the class activities
