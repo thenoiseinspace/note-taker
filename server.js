@@ -76,7 +76,7 @@ app.post("/api/notes", function(req, res){
         writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
         res.JSON(note); 
     })
-}); 
+});  
 
 app.delete("/api/notes/:id", function(req, res){
     const idToDelete = parseInt(req.params.id); 
