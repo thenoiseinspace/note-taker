@@ -1,16 +1,11 @@
-//basing the structure for this on the miniproject 
+//basing the structure for this on the miniproject, including the same naming convention/structure
 
 const express = require('express');
+const notesRouter = require('./notes'); 
 
-// Import our modular routers for /tips and /feedback
-const tipsRouter = require('./tips');
-const feedbackRouter = require('./feedback');
-// TODO: import your diagnostics route
 
 const app = express();
 
-app.use('/tips', tipsRouter);
-app.use('/feedback', feedbackRouter);
-// TODO: Initialize diagnostics route
+app.use('/notes', notesRouter);
 
 module.exports = app;
