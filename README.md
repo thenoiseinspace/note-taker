@@ -16,8 +16,8 @@ Use this app to create notes, similar to the notes app that comes on your phone.
 Github repo link: https://github.com/thenoiseinspace/note-taker
 
 Image (also in assets folder): 
-(./Assets/screenshot1.png)
-(./Assets/11-express-homework-demo-01.png)
+<img src="./Assets/screenshot1.png">
+<img src="./Assets/11-express-homework-demo-01.png">
 
 ## Credits
 
