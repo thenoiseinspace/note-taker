@@ -1,7 +1,7 @@
 //basing this on the miniproject
 
 const notes = require('express').Router();
-const { readFromFile, readAndAppend } = require('../db/db.json');
+const { readFromFile, readAndAppend } = require('/Develop/db/db.json');
 // const { v4: uuidv4 } = require('uuid');
 const fs = require("fs"); 
 

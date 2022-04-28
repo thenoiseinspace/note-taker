@@ -1,5 +1,3 @@
-//Note: I had to run npm i express twice to get this to work? Not sure why. Anyway, now all my package-lock.json and module files are duplicated, have fun with that. 
-
 //Setup - based on activity 1
 
 /////////////////
@@ -7,16 +5,17 @@
 /////////////////
 const express = require("express"); 
 const path = require ("path"); 
-
+const fs = require("fs"); 
 const api = require("./routes/index.js"); 
+const util = require("util"); 
+const dataForDb = require('./Develop/db/db.json')
 
 const app = express(); 
 const PORT = process.env.PORT || 3001;
-
-const fs = require ("fs"); 
-const util = require("util"); 
+ 
 const { allowedNodeEnvironmentFlags } = require("process");
 
+//Setting up for async processes
 const writeFileAsync = util.promisify(fs.readFile); 
 const readFileAsync = util.promisify(fs.readFile); 
 
@@ -34,13 +33,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json()); 
 //This is the middleware part--static automatically creates urls to everything inside the public folder so we don't have to do it manually
 app.use(express.static(".Develop/public"))
-// app.use('/api', api); 
+app.use('/api', api); 
+
+
+//Setting up HTML API routes - basing mostly on the structure from activities 3, 7, and 13 
 
 ///////////////
 //HTML routes//
 ///////////////
 
-//Setting up HTML routes - basing mostly on the structure from activities 3 and 7
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "/Develop/public/notes.html"));
 });
@@ -53,12 +54,11 @@ app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "/Develop/public/index.html")); 
 });
 
-//Listening - and yes I *DID* add the rocket ship like the class activities
-app.listen(PORT, function(){
-    console.log("App listening on http://localhost:${PORT} 🚀 "); 
-}); 
+////////////////
+//Get requests//
+////////////////
 
-
+//this one reads the db.json file and converts it 
 app.get("/api/notes", function(req, res){
     readFileAsync("./develop/db/db.json", "utf8").then(function(data){
         notes = [].concat(JSON.parse(data))
@@ -66,17 +66,28 @@ app.get("/api/notes", function(req, res){
     })
 })
 
+/////////////////
+//Post requests//
+/////////////////
+
 app.post("/api/notes", function(req, res){
     const note = req.body; 
     readFileAsync(".develop/db/db.JSON", "utf8").then(function(data){
+       //adding an empty array here to hold the notes
+        const notes = [].concat(JSON.parse(data));
         note.id = notes.length +1
         notes.push(note); 
         return notes
     }).then(function(notes){
+        //push the note back to the db.json 
         writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
         res.JSON(note); 
     })
 });  
+
+///////////////////
+//Delete requests//
+///////////////////
 
 app.delete("/api/notes/:id", function(req, res){
     const idToDelete = parseInt(req.params.id); 
@@ -91,7 +102,12 @@ app.delete("/api/notes/:id", function(req, res){
         return newNotesData
     }).then(function(notes){
         writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
-        res.send("saved successfully"); 
+        res.send("note saved successfully"); 
     })
 }) 
 
+
+//Listening - and yes I *DID* add the rocket ship like the class activities
+app.listen(PORT, function(){
+    console.log("App listening on `http://localhost:${PORT}` 🚀 "); 
+}); 
