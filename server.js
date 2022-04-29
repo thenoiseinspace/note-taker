@@ -8,10 +8,13 @@ const path = require ("path");
 const fs = require("fs"); 
 const api = require("./routes/index.js"); 
 const util = require("util"); 
-const dataForDb = require('./Develop/db/db.json')
+const dbNotes = require("./Develop/db/db.json"); 
+//uuid comes from unit 15 
+const uuid = require("uuid"); 
 
 const app = express(); 
 const PORT = process.env.PORT || 3001;
+//either add a .env or process.env.PORT ||
  
 const { allowedNodeEnvironmentFlags } = require("process");
 
@@ -47,6 +50,7 @@ app.get("/notes", (req, res) => {
 });
 
 app.get("/", (req, res) => {
+   // console.log(notes[0].title); 
     res.sendFile(path.join(__dirname, "/Develop/public/index.html")); 
 }); 
 
@@ -61,7 +65,7 @@ app.get("*", (req, res) => {
 //this one reads the db.json file and converts it 
 app.get("/api/notes", function(req, res){
     readFileAsync("./develop/db/db.json", "utf8").then(function(data){
-        notes = [].concat(JSON.parse(data))
+        notes.push (JSON.parse(data))
         res.JSON(notes); 
     })
 })
@@ -72,18 +76,21 @@ app.get("/api/notes", function(req, res){
 
 app.post("/api/notes", function(req, res){
     const note = req.body; 
-    readFileAsync(".develop/db/db.JSON", "utf8").then(function(data){
-       //adding an empty array here to hold the notes
-        const notes = [].concat(JSON.parse(data));
-        note.id = notes.length +1
-        notes.push(note); 
-        return notes
-    }).then(function(notes){
-        //push the note back to the db.json 
-        writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
-        res.JSON(note); 
-    })
-});  
+    notes.push(note); 
+    // console.log(notes[0]);
+    // console.log(notes[1]); 
+    // readFileAsync(".develop/db/db.JSON", "utf8").then(function(data){
+    //    //adding an empty array here to hold the notes
+    //     const notes = [].concat(JSON.parse(data));
+    //     note.id = notes.length +1
+    //     notes.push(note); 
+    //     return notes
+    // }).then(function(notes){
+    //     //push the note back to the db.json 
+    //     writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
+    //     res.JSON(note); 
+    // })
+});  //use uuid to post
 
 ///////////////////
 //Delete requests//
@@ -104,10 +111,10 @@ app.delete("/api/notes/:id", function(req, res){
         writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
         res.send("note saved successfully"); 
     })
-}) 
+}) //use notes.filter to delete, use fs here 
 
 
 //Listening - and yes I *DID* add the rocket ship like the class activities
 app.listen(PORT, function(){
-    console.log("App listening on `http://localhost:${PORT}` 🚀 "); 
+    console.log(`App listening on "http://localhost:${PORT}" 🚀 `); 
 }); 
