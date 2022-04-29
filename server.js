@@ -14,7 +14,6 @@ const uuid = require("uuid");
 
 const app = express(); 
 const PORT = process.env.PORT || 3001;
-//either add a .env or process.env.PORT ||
  
 const { allowedNodeEnvironmentFlags } = require("process");
 
@@ -65,8 +64,8 @@ app.get("*", (req, res) => {
 //this one reads the db.json file and converts it 
 app.get("/api/notes", function(req, res){
     readFileAsync("./develop/db/db.json", "utf8").then(function(data){
-        notes.push (JSON.parse(data))
-        res.JSON(notes); 
+        dbNotes.push (JSON.parse(data))
+        res.JSON(dbNotes); 
     })
 })
 
@@ -76,20 +75,18 @@ app.get("/api/notes", function(req, res){
 
 app.post("/api/notes", function(req, res){
     const note = req.body; 
-    notes.push(note); 
-    // console.log(notes[0]);
-    // console.log(notes[1]); 
-    // readFileAsync(".develop/db/db.JSON", "utf8").then(function(data){
-    //    //adding an empty array here to hold the notes
-    //     const notes = [].concat(JSON.parse(data));
-    //     note.id = notes.length +1
-    //     notes.push(note); 
-    //     return notes
-    // }).then(function(notes){
-    //     //push the note back to the db.json 
-    //     writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
-    //     res.JSON(note); 
-    // })
+    dbNotes.push(note); 
+    readFileAsync(".develop/db/db.JSON", "utf8").then(function(data){
+       //adding an empty array here to hold the notes
+        const notes = [].concat(JSON.parse(data));
+        note.id = notes.length +1
+        notes.push(note); 
+        return notes
+    }).then(function(notes){
+        //push the note back to the db.json 
+        writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
+        res.JSON(note); 
+    })
 });  //use uuid to post
 
 ///////////////////

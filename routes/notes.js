@@ -1,7 +1,9 @@
 //basing this on the miniproject
 
 const notes = require('express').Router();
-const { readFromFile, readAndAppend } = require('../Develop/db/db.json');
+// const { readFromFile, readAndAppend } = require('../Develop/db/db.json');
+const dbNotes = require('../Develop/db/db.json');
+//creates unique id
 const { v4: uuidv4 } = require('uuid');
 const fs = require("fs"); 
 
@@ -13,7 +15,7 @@ notes.get('/', (req, res) => {
 // POST Route for a new note
 notes.post('/', (req, res) => {
   // console.log(req.body);
-  console.log(notes); 
+  console.log(dbNotes); 
 
   const { title, noteBody } = req.body;
 
