@@ -21,10 +21,6 @@ const { allowedNodeEnvironmentFlags } = require("process");
 const writeFileAsync = util.promisify(fs.readFile); 
 const readFileAsync = util.promisify(fs.readFile); 
 
-//getting an error for dirname, found this solution on a github help page--hey, it worked! 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
 //////////////
 //middleware//
 //////////////
@@ -87,28 +83,30 @@ app.post("/api/notes", function(req, res){
         writeFileAsync("./db/db.JSON", JSON.stringify(data))
         res.JSON(note); 
     })
-});  //use uuid to post
+}); 
 
 ///////////////////
 //Delete requests//
 ///////////////////
 
-app.delete("/api/notes/:id", function(req, res){
-    const idToDelete = parseInt(req.params.id); 
-    readFileAsync("./develop/db/db.JSON", "utf8").then(function(data){
-        const notes = [].concat(JSON.parse(data));
-        const newNotesData = []
-        for (let i = 0; i<notes.length; i++){
-            if(idToDelete !== notes[i].id){
-                newNotesData.push(notes[i])
-            }
-        }
-        return newNotesData
-    }).then(function(notes){
-        writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
-        res.send("note saved successfully"); 
-    })
-}) //use notes.filter to delete, use fs here 
+//Please note - this does not currently work
+
+// app.delete("/api/notes/:id", function(req, res){
+//     const idToDelete = parseInt(req.params.id); 
+//     readFileAsync("./db/db.JSON", "utf8").then(function(data){
+//         const notes = [].concat(JSON.parse(data));
+//         const newNotesData = []
+//         for (let i = 0; i<notes.length; i++){
+//             if(idToDelete !== notes[i].id){
+//                 newNotesData.push(notes[i])
+//             }
+//         }
+//         return newNotesData
+//     }).then(function(notes){
+//         writeFileAsync("./db/db.JSON", JSON.stringify(notes))
+//         res.send("note saved successfully"); 
+//     })
+// }) 
 
 
 //Listening - and yes I *DID* add the rocket ship like the class activities
