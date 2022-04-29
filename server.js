@@ -6,9 +6,9 @@
 const express = require("express"); 
 const path = require ("path"); 
 const fs = require("fs"); 
-const api = require("./routes/index.js"); 
+const api = require("./routes/notes.js"); 
 const util = require("util"); 
-const dbNotes = require("./Develop/db/db.json"); 
+const dbNotes = require("./db/db.json"); 
 //uuid comes from unit 15 
 const uuid = require("uuid"); 
 
@@ -34,7 +34,7 @@ app.use(express.urlencoded({extended: true}));
 //Jung said in the coding slack channel that JSON should be capitalized, but this one keeps reverting to lower case when I type it? Not sure why?
 app.use(express.json()); 
 //This is the middleware part--static automatically creates urls to everything inside the public folder so we don't have to do it manually
-app.use(express.static(".Develop/public"))
+app.use(express.static("public"))
 app.use('/api', api); 
 
 
@@ -45,16 +45,16 @@ app.use('/api', api);
 ///////////////
 
 app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, "/Develop/public/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 app.get("/", (req, res) => {
    // console.log(notes[0].title); 
-    res.sendFile(path.join(__dirname, "/Develop/public/index.html")); 
+    res.sendFile(path.join(__dirname, "/public/index.html")); 
 }); 
 
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "/Develop/public/index.html")); 
+    res.sendFile(path.join(__dirname, "/public/index.html")); 
 });
 
 ////////////////
@@ -63,7 +63,7 @@ app.get("*", (req, res) => {
 
 //this one reads the db.json file and converts it 
 app.get("/api/notes", function(req, res){
-    readFileAsync("./develop/db/db.json", "utf8").then(function(data){
+    readFileAsync("./db/db.json", "utf8").then(function(data){
         dbNotes.push (JSON.parse(data))
         res.JSON(dbNotes); 
     })
@@ -76,7 +76,7 @@ app.get("/api/notes", function(req, res){
 app.post("/api/notes", function(req, res){
     const note = req.body; 
     dbNotes.push(note); 
-    readFileAsync(".develop/db/db.JSON", "utf8").then(function(data){
+    readFileAsync("./db/db.JSON", "utf8").then(function(data){
        //adding an empty array here to hold the notes
         const notes = [].concat(JSON.parse(data));
         note.id = notes.length +1
@@ -84,7 +84,7 @@ app.post("/api/notes", function(req, res){
         return notes
     }).then(function(notes){
         //push the note back to the db.json 
-        writeFileAsync("./develop/db/db.JSON", JSON.stringify(notes))
+        writeFileAsync("./db/db.JSON", JSON.stringify(data))
         res.JSON(note); 
     })
 });  //use uuid to post
