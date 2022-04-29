@@ -8,8 +8,13 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require("fs"); 
 
 // GET Route for retrieving all the tips
-notes.get('/', (req, res) => {
-  readFromFile('../db/db.json').then((data) => res.json(JSON.parse(data)));
+// notes.get('/', (req, res) => {
+//   readFromFile('../db/db.json').then((data) => res.json(JSON.parse(data)));
+// });
+
+notes.get ('/notes', (req, res) =>{
+  var store = require('../db/db.json');
+  res.json(store);
 });
 
 // POST Route for a new note
